@@ -67,9 +67,9 @@
     - ( ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat' ) and ansible_distribution_major_version == '6'
     - wazuh_manager_config.cluster.disable != 'yes'
 
-- name: RedHat/CentOS/Fedora | Install OpenJDK 1.8
+- name: RedHat/CentOS/Fedora | Install OpenJDK 21
   yum:
-    name: java-1.8.0-openjdk
+    name: java-1.21.0-openjdk
     state: present
     lock_timeout: 200
   when:

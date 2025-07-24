@@ -104,7 +104,7 @@ wazuh_manager_ciscat:
   timeout: 1800
   interval: '1d'
   scan_on_start: 'yes'
-  java_path: '/usr/lib/jvm/java-1.8.0-openjdk-amd64/jre/bin'
+  java_path: '/usr/lib/jvm/java-21-openjdk-amd64/jre/bin'
   ciscat_path: 'wodles/ciscat'
 
 wazuh_manager_osquery:
