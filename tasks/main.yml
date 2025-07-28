@@ -406,5 +406,19 @@
     - ( agent_groups is defined) and ( agent_groups|length > 0)
   tags: molecule-idempotence-notest
 
+- name: Create shared configuration for osquery
+  ansible.builtin.template:
+    src: agent.conf.j2
+    dest: /vars/ossec/etc/shared/ubuntu/agent.conf
+    owner: wazuh
+    group: wazuh
+    mode: '0660'
+  when:
+    - ansible_distribution == "Ubuntu" and (ansible_distribution_major_version | int >= 22)
+    - wazuh_manager_config.osquery.disable == 'no'
+    - not wazuh_custom_packages_installation_manager_enabled
+  tags:
+    - config
+
 - name: Run uninstall tasks
   ansible.builtin.include_tasks: uninstall.yml
