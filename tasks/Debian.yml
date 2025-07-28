@@ -116,6 +116,85 @@
   tags:
     - config
 
+# Osquery installation
+- name: Debian/Ubuntu | Installing Osquery repository key (Ubuntu >= 22)
+  become: true
+  ansible.builtin.shell: |
+    set -o pipefail
+    curl -L https://pkg.osquery.io/deb/pubkey.gpg | sudo tee /etc/apt/keyrings/osquery.asc
+  args:
+    # warn: false
+    executable: /bin/bash
+  changed_when: false
+  when:
+    - ansible_distribution == "Ubuntu" and (ansible_distribution_major_version | int >= 22)
+    - wazuh_manager_config.osquery.disable == 'no'
+    - not wazuh_custom_packages_installation_manager_enabled
+  tags:
+    - init
+  
+- name: Add Osquery repository
+  become: true
+  ansible.builtin.apt_repository:
+    repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/osquery.asc] https://pkg.osquery.io/deb deb main"
+    state: present
+    update_cache: true
+  when:
+    - ansible_distribution == "Ubuntu" and (ansible_distribution_major_version | int >= 22)
+    - wazuh_manager_config.osquery.disable == 'no'
+    - not wazuh_custom_packages_installation_manager_enabled
+  tags:
+    - init
+
+- name: Debian/Ubuntu | Install Osquery
+  become: true
+  ansible.builtin.apt:
+    name: osquery
+    state: present
+  when:
+    - ansible_distribution == "Ubuntu" and (ansible_distribution_major_version | int >= 22)
+    - wazuh_manager_config.osquery.disable == 'no'
+    - not wazuh_custom_packages_installation_manager_enabled
+  tags:
+    - init
+  register: wazuh_agent_osquery_package_install
+  until: wazuh_agent_osquery_package_install is succeeded
+
+- name: Debian/Ubuntu | Copy Osquery configuration file
+  become: true
+  ansible.builtin.copy:
+    src: osquery.conf
+    dest: /etc/osquery/osquery.conf
+    owner: root
+    group: root
+    mode: '0644'
+  when:
+    - ansible_distribution == "Ubuntu" and (ansible_distribution_major_version | int >= 22)
+    - wazuh_manager_config.osquery.disable == 'no'
+    - not wazuh_custom_packages_installation_manager_enabled
+  tags:
+    - config
+
+- name: Debian/Ubuntu | Enable Osquery service
+  become: true
+  ansible.builtin.systemd:
+    name: osqueryd
+    enabled: true
+  when:
+    - ansible_distribution == "Ubuntu" and (ansible_distribution_major_version | int >= 22)
+    - wazuh_manager_config.osquery.disable == 'no'
+    - not wazuh_custom_packages_installation_manager_enabled
+
+- name: Debian/Ubuntu | start Osquery service
+  become: true
+  ansible.builtin.systemd:
+    name: osqueryd
+    state: started
+  when:
+    - ansible_distribution == "Ubuntu" and (ansible_distribution_major_version | int >= 22)
+    - wazuh_manager_config.osquery.run_daemon == 'yes'
+    - not wazuh_custom_packages_installation_manager_enabled
+
 - name: Debian/Ubuntu | Install wazuh-manager
   ansible.builtin.apt:
     name:

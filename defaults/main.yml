@@ -108,7 +108,7 @@ wazuh_manager_ciscat:
   ciscat_path: 'wodles/ciscat'
 
 wazuh_manager_osquery:
-  disable: 'yes'
+  disable: 'no'
   run_daemon: 'yes'
   log_path: '/var/log/osquery/osqueryd.results.log'
   config_path: '/etc/osquery/osquery.conf'
