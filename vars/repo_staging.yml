@@ -18,4 +18,4 @@ wazuh_macos_arm_package_url: "https://packages-dev.wazuh.com/staging/macos/{{ wa
 certs_gen_tool_version: "4.12"
 
 # Url of certificates generator tool
-certs_gen_tool_url: "https://packages-dev.wazuh.com/{{ certs_gen_tool_version }}/wazuh-certs-tool.sh"
+#certs_gen_tool_url: "https://packages-dev.wazuh.com/{{ certs_gen_tool_version }}/wazuh-certs-tool.sh"
