@@ -409,10 +409,12 @@
 - name: Create shared configuration for osquery
   ansible.builtin.template:
     src: agent.conf.j2
-    dest: /vars/ossec/etc/shared/ubuntu/agent.conf
+    dest: /var/ossec/etc/shared/ubuntu/agent.conf
     owner: wazuh
     group: wazuh
     mode: '0660'
+    force: true
+  notify: restart wazuh-manager
   when:
     - ansible_distribution == "Ubuntu" and (ansible_distribution_major_version | int >= 22)
     - wazuh_manager_config.osquery.disable == 'no'
